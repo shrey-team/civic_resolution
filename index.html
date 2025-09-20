@@ -13,12 +13,15 @@
         }
 
         body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c8ef4, #14cba8);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+              font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #2c8ef4, #14cba8);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;   /* 👈 stack items vertically */
+    align-items: center;
+    justify-content: flex-start;  /* 👈 start from top */
+    gap: 5px;  /* space between login box and channels */
+    padding: 2rem 1rem;
         }
 
         .auth-container {
@@ -28,6 +31,7 @@
             padding: 2rem;
             border-radius: 20px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            margin-right: 30px;
         }
 
         h1 {
@@ -78,6 +82,39 @@
         .hidden {
             display: none;
         }
+        .channels {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 500px;
+    }
+    .channels h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #047857;
+    }
+    .channel-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      padding: 0.6rem;
+      border-radius: 8px;
+      background: #f9fafb;
+    }
+    .channel-item a {
+      color: #1d4ed8;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .channel-item a:hover {
+      text-decoration: underline;
+    }
+    .channel-item span {
+      margin-left: 0.6rem;
+      font-size: 1rem;
+    }
     </style>
 </head>
 
@@ -113,10 +150,31 @@
         </div>
     </div>
 
+    <!-- ✅ Multi-Channel Access Info -->
+  <div class="channels">
+    <h2>Report Issues via Multiple Channels</h2>
+    <div class="channel-item">📱 <span><b>App</b> – Coming soon </span></div>
+    <div class="channel-item">💬 
+      <span><b>WhatsApp</b> – 
+        <a href="https://wa.me/919559647843?text=Report%20Civic%20Issue%3A%20Please%20describe%20the%20problem%20(location%2C%20details%2C%20photo%20if%20possible)." target="_blank">
+          +91-9559647843
+        </a>
+      </span>
+    </div>
+    <div class="channel-item">📩 
+      <span><b>SMS</b> – 
+        <a href="sms:56789?body=Report%20Civic%20Issue%3A%20Please%20describe%20the%20problem%20(location,%20details,%20photo%20if%20possible).">
+          Send to 56789
+        </a>
+      </span>
+    </div>
+    <div class="channel-item">🏢 <span><b>Kiosks</b> – Available at Municipal offices</span></div>
+  </div>
+
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-        const SUPABASE_URL = 'https://xnqtjcovuqzajuqzaunf.supabase.co'
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhucXRqY292dXF6YWp1cXphdW5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MzIyMzEsImV4cCI6MjA3MzEwODIzMX0.YbmzZoqOdIX_inX-khtpg1IsiCNUROAvR4Z2N85lEvM'
+        const SUPABASE_URL = 'https://lxclfklnpktmvtgkpkgg.supabase.co'
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4Y2xma2xucGt0bXZ0Z2twa2dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyODExNTEsImV4cCI6MjA3Mzg1NzE1MX0.qaAtZrCKsk9w_kIE3A6wX2_U4NAafIaC-pWhPcu3Fzc'
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
         function showRegister() {
