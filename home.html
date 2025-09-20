@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -245,6 +246,10 @@
       background: rgb(247, 185, 165)
     }
 
+    .card6 {
+      background: rgb(247, 165, 224)
+    }
+
     .card-icon {
       font-size: 3.6rem;
       margin-bottom: 0.6rem;
@@ -290,167 +295,216 @@
     }
 
     footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  padding: 0.8rem 1rem;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-top: 1px solid #333;
-  z-index: 1000;
-}
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 0.8rem 1rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #333;
+      z-index: 1000;
+    }
 
-footer button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-}
-footer button:hover {
-  color: #00bfff;
-}
+    footer button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    footer button:hover {
+      color: #00bfff;
+    }
 
 
     /* profile button (visible) */
     .profile-btn {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: #fff;
-      font-weight: 700;
-      font-size: 1.05rem;
-      cursor: pointer;
-      z-index: 3;
-    }
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  z-index: 3;
+  backdrop-filter: blur(6px);
+  transition: background 0.3s ease;
+}
+.profile-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
 
-    /* ====== Profile Drawer (REPLACE your existing .profile-panel / .close-x rules with this) ====== */
-    .profile-panel {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 100%;
-      height: 100%;
-      max-width: 420px;
-      /* won't grow too wide on large screens */
-      background: #fff;
-      box-shadow: -8px 0 30px rgba(0, 0, 0, 0.25);
-      transition: right .28s ease-in-out;
-      padding: 20px;
-      /* main padding */
-      padding-top: 64px;
-      /* important: push content below the close button */
-      box-sizing: border-box;
-      z-index: 1200;
-      overflow-y: auto;
-    }
+/* ===== Profile Drawer ===== */
+.profile-panel {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  max-width: 420px;
+  background: linear-gradient(135deg, #667eea, #764ba2, #6b8dd6);
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.25);
+  transition: right .28s ease-in-out;
+  padding: 20px;
+  padding-top: 72px;
+  box-sizing: border-box;
+  z-index: 1200;
+  overflow-y: auto;
+  font-family: "Segoe UI", sans-serif;
+  color: #f4f4f9;
+}
 
-    /* open state */
-    .profile-panel.open {
-      right: 0;
-    }
+/* open state */
+.profile-panel.open {
+  right: 0;
+}
 
-    /* header title - give right padding so it never sits below the close button */
-    .profile-panel h2 {
-      margin: 0 0 6px 0;
-      font-size: 1.15rem;
-      padding-right: 56px;
-      /* reserve space for the close button */
-    }
+/* ===== Header with avatar ===== */
+.profile-panel h2 {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #fff;
+  position: relative;
+}
+.profile-panel h2::before {
+  content: "👤";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #43cea2, #185a9d);
+  color: #fff;
+  margin: 0 auto 10px auto;
+  box-shadow: 0 4px 15px rgba(24, 90, 157, 0.35);
+}
 
-    /* body text inside panel */
-    .profile-panel p {
-      margin: 0.45rem 0;
-      color: #222;
-    }
+/* ===== Text details ===== */
+.profile-panel p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  text-align: center;
+  color: #f1f1f1;
+}
+.profile-panel strong {
+  color: #fff;
+  font-weight: 600;
+}
 
-    .profile-panel .small {
-      color: #666;
-      font-size: 0.9rem;
-    }
+/* Section headers */
+.profile-panel h3 {
+  margin: 14px 0 8px;
+  font-size: 1.05rem;
+  color: #ffd369;
+  font-weight: 600;
+  text-align: center;
+}
 
-    /* Buttons in the panel (BUT NOT the close-X) */
-    .profile-panel button:not(.close-x) {
-      margin-top: 1rem;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: none;
-      background: #764ba2;
-      color: #fff;
-      cursor: pointer;
-      width: 100%;
-      display: inline-block;
-      box-sizing: border-box;
-    }
-
-    /* small floating close button (explicitly sized so it doesn't expand) */
-    .close-x {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 36px;
-      height: 36px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      border: none;
-      background: #e74c3c;
-      /* 🔴 red background */
-      font-size: 16px;
-      line-height: 1;
-      cursor: pointer;
-      color: #fff;
-      /* white "x" */
-      z-index: 1300;
-      transition: background 0.2s ease-in-out;
-    }
-
-    /* hover effect */
-    .close-x:hover {
-      background: #c0392b;
-      /* darker red on hover */
-    }
+/* Total reports count (added before report list) */
+h3::after {
+  content: " (Total Reports: )";
+  font-size: 0.85rem;
+  font-weight: normal;
+  color: #eee;
+  margin-left: 6px;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
 
 
-    /* accessibility focus */
-    .close-x:focus {
-      outline: 2px solid rgba(118, 75, 162, 0.25);
-      outline-offset: 2px;
-    }
+/* ===== Reports list ===== */
+#myReports {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+#myReports li {
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.95rem;
+  color: #f4f4f9;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+#myReports li:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.02);
+}
 
-    /* responsive tweaks */
-    @media (max-width: 768px) {
-      .profile-panel {
-        width: 100%;
-        right: -100%;
-        padding-top: 72px;
-        /* give a little extra top space on small screens */
-      }
+/* ===== Buttons ===== */
+.profile-panel button:not(.close-x) {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #43cea2, #185a9d);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(24, 90, 157, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.profile-panel button:not(.close-x):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(24, 90, 157, 0.45);
+}
 
-      .profile-panel h2 {
-        padding-right: 56px;
-      }
+/* ===== Close button ===== */
+.close-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  background: #e74c3c;
+  font-size: 16px;
+  cursor: pointer;
+  color: #fff;
+  z-index: 1300;
+  transition: background 0.2s ease;
+}
+.close-x:hover {
+  background: #c0392b;
+}
 
-      .close-x {
-        top: 10px;
-        right: 10px;
-        width: 40px;
-        height: 40px;
-      }
-    }
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .profile-panel {
+    width: 100%;
+    padding-top: 80px;
+  }
+  .close-x {
+    width: 42px;
+    height: 42px;
+  }
+}
+
 
     /* ====== Chatbot Styles ====== */
     .chatbot-icon {
@@ -595,6 +649,34 @@ footer button:hover {
     .send_button:hover {
       background: #1251a3;
     }
+
+/* Leaderboard button container */
+.leaderboard-container {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+/* Leaderboard button style */
+.leaderboard-btn {
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff6a00, #ee0979);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(238, 9, 121, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.leaderboard-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(238, 9, 121, 0.5);
+}
+
+
   </style>
 </head>
 
@@ -652,24 +734,28 @@ footer button:hover {
         <span class="card-icon">⚡</span>
         <div class="card-title">Other Issues</div>
       </div>
+      <div class="card card6" data-issue="All issues">
+        <span class="card-icon">♻</span>
+        <div class="card-title">All issues</div>
+      </div>
     </div>
-<div class="impact" id="liveDashboard">
-  <h3>📡 Live Dashboard</h3>
-  <div class="impact-stats">
-    <div class="impact-box">
-      📊 <span id="totalReports">0</span><br>
-      <small class="small">Total Reports</small>
+    <div class="impact" id="liveDashboard">
+      <h3>📡 Live Dashboard</h3>
+      <div class="impact-stats">
+        <div class="impact-box">
+          📊 <span id="totalReports">0</span><br>
+          <small class="small">Total Reports</small>
+        </div>
+        <div class="impact-box">
+          ⏳ <span id="inProgress">0</span><br>
+          <small class="small">In Progress</small>
+        </div>
+        <div class="impact-box">
+          ✅ <span id="resolved">0</span><br>
+          <small class="small">Resolved</small>
+        </div>
+      </div>
     </div>
-    <div class="impact-box">
-      ⏳ <span id="inProgress">0</span><br>
-      <small class="small">In Progress</small>
-    </div>
-    <div class="impact-box">
-      ✅ <span id="resolved">0</span><br>
-      <small class="small">Resolved</small>
-    </div>
-  </div>
-</div>
 
   </div>
 
@@ -677,7 +763,6 @@ footer button:hover {
     <button onclick="window.location.href='home.html'">🏠 Home</button>
     <button onclick="window.location.href='report.html'">📝 Report</button>
     <button onclick="window.location.href='feedback.html'">🗺 Feedback</button>
-    <button onclick="window.location.href='murli.html'"> Maps</button>
     <button onclick="window.location.href='about.html'"> About us</button>
     <button id="footerLogout">🚪 Logout</button>
   </footer>
@@ -698,68 +783,75 @@ footer button:hover {
     </ul>
     <hr style="margin:12px 0;border:none;border-top:1px solid #eee" />
     <button id="profileLogout">🚪 Logout</button>
+
+  <div class="leaderboard-container">
+  <a href="leaderboard.html" class="leaderboard-btn">🏆 Leaderboard</a>
+</div>
+
   </aside>
 
-<!-- Supabase + app logic -->
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-  const SUPABASE_URL = 'https://xnqtjcovuqzajuqzaunf.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhucXRqY292dXF6YWp1cXphdW5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MzIyMzEsImV4cCI6MjA3MzEwODIzMX0.YbmzZoqOdIX_inX-khtpg1IsiCNUROAvR4Z2N85lEvM';
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  /* ---------------- USER FETCH ---------------- */
-  async function fetchUserFromSupabase(userId) {
-    try {
-      if (!userId) return null;
-      const { data, error } = await supabase
-        .from('registrations')
-        .select('username, email, phone')
-        .eq('id', userId)
-        .single();
-      if (error) {
-        console.warn('Supabase fetch error:', error);
+
+  <!-- Supabase + app logic -->
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    const SUPABASE_URL = 'https://lxclfklnpktmvtgkpkgg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4Y2xma2xucGt0bXZ0Z2twa2dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyODExNTEsImV4cCI6MjA3Mzg1NzE1MX0.qaAtZrCKsk9w_kIE3A6wX2_U4NAafIaC-pWhPcu3Fzc';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ---------------- USER FETCH ---------------- */
+    async function fetchUserFromSupabase(userId) {
+      try {
+        if (!userId) return null;
+        const { data, error } = await supabase
+          .from('registrations')
+          .select('username, email, phone')
+          .eq('id', userId)
+          .single();
+        if (error) {
+          console.warn('Supabase fetch error:', error);
+          return null;
+        }
+        return data;
+      } catch (err) {
+        console.error('Supabase error', err);
         return null;
       }
-      return data;
-    } catch (err) {
-      console.error('Supabase error', err);
-      return null;
-    }
-  }
-
-  window._fetchUserFromSupabase = fetchUserFromSupabase;
-
-  /* ---------------- LIVE DASHBOARD ---------------- */
-  async function refreshDashboard() {
-    const { data, error } = await supabase
-      .from('complaints')
-      .select('status');
-
-    if (error) {
-      console.error("Dashboard fetch error:", error);
-      return;
     }
 
-    const total = data.length;
-    const inProgress = data.filter(r => r.status === 'In Progress').length;
-    const resolved = data.filter(r => r.status === 'Solved').length;
+    window._fetchUserFromSupabase = fetchUserFromSupabase;
 
-    document.getElementById('totalReports').textContent = total;
-    document.getElementById('inProgress').textContent = inProgress;
-    document.getElementById('resolved').textContent = resolved;
-  }
+    /* ---------------- LIVE DASHBOARD ---------------- */
+    async function refreshDashboard() {
+      const { data, error } = await supabase
+        .from('complaints')
+        .select('status');
 
-  // Initial load
-  refreshDashboard();
+      if (error) {
+        console.error("Dashboard fetch error:", error);
+        return;
+      }
 
-  // Realtime updates whenever reports table changes
-  supabase
-    .channel('reports-changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'reports' }, () => {
-      refreshDashboard();
-    })
-    .subscribe();
-</script>
+      const total = data.length;
+      const inProgress = data.filter(r => r.status === 'In Progress').length;
+      const resolved = data.filter(r => r.status === 'Solved').length;
+
+      document.getElementById('totalReports').textContent = total;
+      document.getElementById('inProgress').textContent = inProgress;
+      document.getElementById('resolved').textContent = resolved;
+    }
+
+    // Initial load
+    refreshDashboard();
+
+    // Realtime updates whenever reports table changes
+    supabase
+      .channel('reports-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reports' }, () => {
+        refreshDashboard();
+      })
+      .subscribe();
+  </script>
 
 
   <script>
@@ -827,7 +919,16 @@ footer button:hover {
     document.querySelectorAll('.card').forEach(card => {
       card.addEventListener('click', () => {
         const issue = card.dataset.issue || 'Other';
-        window.location.href = `report.html?issue=${encodeURIComponent(issue)}`;
+
+        if (issue === "All issues") {
+          // Go to murli.html instead
+          window.location.href = "sidebar.html";
+        } else {
+          // Default: go to report.html
+         window.location.href = `report.html?issue=${encodeURIComponent(issue)}`;
+
+
+        }
       });
     });
 
@@ -996,7 +1097,8 @@ footer button:hover {
             return;
           }
           addUserMessage(`Name: ${name}`);
-          addUserMessage(`Mobile Number: ${phone}`);
+addUserMessage(`Mobile Number: ${phone}`);
+
           form.remove();
           addBotMessage("Thank you! Our executives will connect with you shortly.");
           setTimeout(showOptions, 1000);
@@ -1010,7 +1112,7 @@ footer button:hover {
         addUserMessage(text);
 
         if (awaitingComplaintNumber) {
-          addBotMessage(`Your complaint (${text}) has been processed and will be solved soon.`);
+         addBotMessage(`Your complaint (${text}) has been processed and will be solved soon.`);
           awaitingComplaintNumber = false;
           setTimeout(showOptions, 1000);
         }
