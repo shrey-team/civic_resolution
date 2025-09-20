@@ -1,0 +1,273 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jharkhand Map — Issues</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Heatmap plugin (optional, kept since you used it before) -->
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { display: flex; flex-direction: column; }
+    .sidebar-header { display: flex; justify-content: space-between; align-items: center; }
+    .back-btn a {
+      text-decoration: none; background: #0077b6; color: #fff;
+      padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold;
+      transition: background 0.3s ease, transform 0.2s ease; animation: pulse 1.8s infinite;
+    }
+    .back-btn a:hover { background: #005f87; transform: scale(1.05); }
+    .back-btn a:active { background: #004466; transform: scale(0.98); }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,119,182,0.6);} 70% { box-shadow:0 0 0 20px rgba(0,119,182,0);} 100% {box-shadow:0 0 0 0 rgba(0,119,182,0);} }
+    #container { display: flex; height: 100vh; width: 100%; }
+    #sidebar { width: 300px; background: #f8f8f8; padding: 10px; overflow-y: auto; border-right: 1px solid #ddd; z-index: 500; }
+    #sidebar h3 { margin-top: 0; }
+    .report { padding: 10px; border-bottom: 1px solid #ddd; cursor: pointer; }
+    .report:hover { background: #eee; }
+    #map { flex: 1; }
+    .vote-controls { margin-top: 5px; display: flex; gap: 6px; align-items: center; }
+    .vote-btn { cursor: pointer; padding: 2px 6px; border-radius: 4px; border: 1px solid #ccc; background: #fff; }
+    .vote-btn:hover { background: #eee; }
+    .vote-count { font-size: 0.85rem; color: #333; }
+    .gallery img { margin: 5px 5px 0 0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <h3>Service Requests</h3>
+        <div class="back-btn"><a href="home.html">⬅ Back to Home</a></div>
+      </div>
+
+      <!-- Filter + Search (populated dynamically to avoid mismatch) -->
+      <div style="margin:10px 0;">
+        <select id="filterType"><option>-- Select --</option></select>
+        <input type="text" id="searchBox" placeholder="Search description..." />
+      </div>
+
+      <div id="reportList"></div>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+
+  <script>
+    const jharkhandCenter = [23.6102, 85.2799];
+    const map = L.map('map').setView(jharkhandCenter, 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+
+    // Supabase client (replace with your anon key)
+    const supabaseUrl = "https://lxclfklnpktmvtgkpkgg.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4Y2xma2xucGt0bXZ0Z2twa2dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyODExNTEsImV4cCI6MjA3Mzg1NzE1MX0.qaAtZrCKsk9w_kIE3A6wX2_U4NAafIaC-pWhPcu3Fzc";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // anon id for voting
+    let anonId = localStorage.getItem("anon_id");
+    if (!anonId) { anonId = crypto.randomUUID(); localStorage.setItem("anon_id", anonId); }
+
+    // canonical categories used on your home page
+    const CANONICAL = [
+      "Road & Pothole Issues",
+      "Waste Management",
+      "Street Lighting",
+      "Water Infrastructure",
+      "Other Issues"
+    ];
+
+    // synonyms → canonical mapping (robust to different strings)
+    const SYNONYMS = {
+      "pothole": "Road & Pothole Issues",
+      "potholes": "Road & Pothole Issues",
+      "road & pothole": "Road & Pothole Issues",
+      "road & pothole issues": "Road & Pothole Issues",
+      "garbage": "Waste Management",
+      "waste": "Waste Management",
+      "waste management": "Waste Management",
+      "street light": "Street Lighting",
+      "street lighting": "Street Lighting",
+      "water leakage": "Water Infrastructure",
+      "water infrastructure": "Water Infrastructure",
+      "water": "Water Infrastructure",
+      "other": "Other Issues",
+      "other issues": "Other Issues"
+    };
+
+    function normalizeIssueType(raw) {
+      if (!raw) return "Other Issues";
+      const s = String(raw).trim().toLowerCase();
+      // exact canonical match
+      for (const c of CANONICAL) if (c.toLowerCase() === s) return c;
+      // check synonyms (contains)
+      for (const key in SYNONYMS) {
+        if (s.includes(key)) return SYNONYMS[key];
+      }
+      // fallback: return original (but prefer canonical fallback)
+      return raw;
+    }
+
+    // color palette keyed by canonical type
+    const colors = {
+      "Road & Pothole Issues": "brown",
+      "Waste Management": "green",
+      "Street Lighting": "yellow",
+      "Water Infrastructure": "blue",
+      "Other Issues": "red"
+    };
+
+    // populate filter dropdown so labels always match canonical names
+    const filterSelect = document.getElementById('filterType');
+    filterSelect.innerHTML = `<option value="">All Issues</option>` + CANONICAL.map(c => `<option value="${c}">${c}</option>`).join('');
+
+    // state for markers and heat
+    let markers = [];
+    let heatLayer = null;
+
+    function clearMarkersAndHeat() {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+      if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
+    }
+
+    // get vote totals per complaint (keeps your existing upsert approach)
+    async function getVoteCount(complaintId) {
+      const { data, error } = await supabase.from("votes").select("vote").eq("complaint_id", complaintId);
+      if (error) {
+        console.error("vote fetch error", error);
+        return 0;
+      }
+      return data.reduce((s, r) => s + (r.vote || 0), 0);
+    }
+
+    async function handleVote(complaintId, value) {
+      const { error } = await supabase.from("votes")
+        .upsert({ complaint_id: complaintId, user_id: anonId, vote: value }, { onConflict: "complaint_id,user_id" });
+      if (error) {
+        console.error("Vote error:", error);
+        alert("Vote failed: " + (error.message || JSON.stringify(error)));
+      } else {
+        // Refresh list & markers (keeps simple)
+        await loadReports();
+      }
+    }
+
+    async function loadReports() {
+      // clear old markers/heat to avoid duplicates
+      clearMarkersAndHeat();
+
+      document.getElementById('reportList').innerHTML = "";
+      const { data, error } = await supabase.from("complaints").select("*").order("created_at", { ascending: false });
+      if (error) { console.error("Error fetching complaints:", error); return; }
+      if (!data) return;
+
+      // read user inputs
+      const filterType = document.getElementById("filterType").value; // canonical values
+      const searchText = (document.getElementById("searchBox").value || "").trim().toLowerCase();
+
+      // prepare heat data
+      const heatData = [];
+
+      // iterate reports and render only filtered ones
+      for (const report of data) {
+        const normType = normalizeIssueType(report.issue_type);
+        // filter by canonical selection
+        if (filterType && normType !== filterType) continue;
+
+        // search across description, location_text, and normalized type
+        if (searchText) {
+          const hay = ((report.description || "") + " " + (report.location_text || "") + " " + (report.issue_type || "") + " " + normType).toLowerCase();
+          if (!hay.includes(searchText)) continue;
+        }
+
+        const score = await getVoteCount(report.id);
+
+        // create sidebar entry
+        const div = document.createElement('div');
+        div.className = 'report';
+        div.innerHTML = `
+          <b>${report.issue_type}</b><br>
+          ${report.description || "No description"}<br>
+          <small>${report.location_text || ""}</small><br>
+          <small>Status: ${report.status || "Pending"}</small>
+          <div class="vote-controls">
+            <button class="vote-btn" onclick="handleVote(${report.id},1)">⬆</button>
+            <button class="vote-btn" onclick="handleVote(${report.id},-1)">⬇</button>
+            <span class="vote-count">Score: ${score}</span>
+          </div>
+        `;
+        document.getElementById('reportList').appendChild(div);
+
+        // marker (add if coords available)
+        if (report.latitude && report.longitude) {
+          // add heat point
+          heatData.push([report.latitude, report.longitude, 0.5]);
+
+          // choose color by normalized type
+          const fill = colors[normType] || 'gray';
+
+          const marker = L.circleMarker([report.latitude, report.longitude], {
+            radius: 8,
+            fillColor: fill,
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.85
+          }).addTo(map);
+
+          // popup with same vote controls
+          let popup = `
+            <b>${report.issue_type}</b><br>
+            ${report.description || "No description"}<br>
+            <small>${report.location_text || ""}</small><br>
+            <small>Pincode: ${report.pincode || ""}</small><br>
+            <small>Status: ${report.status || "Pending"}</small><br>
+            <div class="vote-controls">
+              <button class="vote-btn" onclick="handleVote(${report.id},1)">⬆</button>
+              <button class="vote-btn" onclick="handleVote(${report.id},-1)">⬇</button>
+              <span class="vote-count">Score: ${score}</span>
+            </div>
+          `;
+
+          // support both single image (image_url) and array (image_urls)
+          if (report.image_urls && Array.isArray(report.image_urls) && report.image_urls.length) {
+            popup += `<div class="gallery">` + report.image_urls.map(u => `<img src="${u}" width="100">`).join('') + `</div>`;
+          } else if (report.image_url) {
+            popup += `<div class="gallery"><img src="${report.image_url}" width="120"></div>`;
+          }
+
+          marker.bindPopup(popup);
+          div.addEventListener('click', () => { map.setView([report.latitude, report.longitude], 15); marker.openPopup(); });
+
+          markers.push(marker);
+        }
+      } // end for
+
+      // add heatmap if there are points
+      if (heatData.length) {
+        heatLayer = L.heatLayer(heatData, { radius: 25, blur: 15 }).addTo(map);
+      }
+    }
+
+    // re-load on filter/search change (debounce for small UX improvement)
+    let reloadTimer = null;
+    function scheduleReload() {
+      clearTimeout(reloadTimer);
+      reloadTimer = setTimeout(loadReports, 200);
+    }
+    document.getElementById("filterType").addEventListener("change", scheduleReload);
+    document.getElementById("searchBox").addEventListener("input", scheduleReload);
+
+    // initial load
+    loadReports();
+  </script>
+</body>
+</html>
